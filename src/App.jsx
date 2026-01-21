@@ -1,4 +1,5 @@
 import React from 'react'
+import { createPortal } from 'react-dom'
 
 function ImageWithFallback({ className, alt, primary }){
 	// Build candidate list: public paths plus any src/ assets matching pattern
@@ -52,6 +53,7 @@ function App() {
 	}, [])
 
 	return (
+		<>
 		<div className="page">
 			<header className="nav">
 				<div className="container nav-inner">
@@ -283,15 +285,19 @@ function App() {
 				</div>
 			</footer>
 		</div>
-		<a
-			href="https://ekomadevpn.com"
-			target="_blank"
-			rel="noopener noreferrer"
-			className="powered-badge"
-		>
-			<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
-			<span>Powered by EkoMade Labs</span>
-		</a>
+		{typeof document !== 'undefined' && createPortal(
+			<a
+				href="https://ekomadevpn.com"
+				target="_blank"
+				rel="noopener noreferrer"
+				className="powered-badge"
+			>
+				<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
+				<span>Powered by EkoMade Labs</span>
+			</a>,
+			document.body
+		)}
+		</>
 	)
 }
 

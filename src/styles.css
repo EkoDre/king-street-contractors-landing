@@ -17,7 +17,7 @@
 }
 
 *{box-sizing:border-box}
-html,body,#root{height:100%}
+html,body,#root{height:100%;max-width:100%;overflow-x:hidden}
 body{
 	margin:0;
 	font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
@@ -127,13 +127,13 @@ body{
 .contact-form-copy{max-width:360px}
 .contact-form-copy h2{margin:0 0 10px}
 .contact-form-copy p{margin:0 0 8px}
-.contact-form{flex:1;display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:16px;background:rgba(0,0,0,.45);border:1px solid var(--outline);backdrop-filter:blur(10px)}
+.contact-form{flex:1;display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:16px;background:rgba(0,0,0,.45);border:1px solid var(--outline);backdrop-filter:blur(10px);max-width:640px;width:100%}
 .form-row{display:flex;gap:16px}
 .form-field{flex:1;display:flex;flex-direction:column;gap:6px}
 .form-field label{font-size:13px;color:var(--text-subtle)}
 .form-field input,
 .form-field select,
-.form-field textarea{border-radius:10px;border:1px solid var(--outline);background:var(--surface-2);color:var(--text);padding:10px 12px;font:inherit;outline:none}
+.form-field textarea{border-radius:10px;border:1px solid var(--outline);background:var(--surface-2);color:var(--text);padding:10px 12px;font:inherit;font-size:16px;outline:none;width:100%;box-sizing:border-box}
 .form-field input:focus,
 .form-field select:focus,
 .form-field textarea:focus{border-color:rgba(138,180,248,.6);box-shadow:0 0 0 1px rgba(138,180,248,.35)}
@@ -174,36 +174,6 @@ body{
 .muted{color:var(--text-subtle);text-decoration:none}
 .muted:hover{color:var(--text-muted)}
 
-/* Powered by badge */
-.powered-badge{
-	position:fixed;
-	right:18px;
-	bottom:18px;
-	display:flex;
-	align-items:center;
-	gap:8px;
-	padding:6px 10px;
-	border-radius:999px;
-	background:rgba(0,0,0,.7);
-	border:1px solid var(--outline);
-	color:var(--text-subtle);
-	font-size:11px;
-	text-decoration:none;
-	backdrop-filter:blur(10px);
-	z-index:80;
-}
-.powered-badge img{
-	height:20px;
-	width:20px;
-	object-fit:contain;
-	border-radius:50%;
-}
-.powered-badge:hover{
-	color:var(--text);
-	border-color:rgba(138,180,248,.7);
-	box-shadow:0 8px 20px rgba(0,0,0,.6);
-}
-
 /* content hierarchy */
 .eyebrow{color:var(--text-subtle);font-size:13px;text-transform:uppercase;letter-spacing:.18em}
 .headline{font-weight:800}
@@ -222,22 +192,19 @@ a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:
 .logo-wrap{display:flex;align-items:center;gap:14px;width:220px;height:52px}
 .logo{width:100%;height:100%;object-fit:contain;filter:brightness(.96) contrast(1.05) drop-shadow(0 4px 16px rgba(0,0,0,.6));background:transparent;border-radius:8px;padding:0;border:none}
 
-/* Powered by badge - clean and minimal */
-.powered-badge{position:fixed !important;bottom:16px !important;right:16px !important;top:auto !important;left:auto !important;display:flex !important;align-items:center;gap:6px;padding:6px 10px;background:rgba(10,10,10,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:20px;text-decoration:none;font-size:11px;color:var(--text-subtle);transition:opacity .2s ease, transform .2s ease;z-index:99999 !important;pointer-events:auto;margin:0 !important}
+/* Powered by badge - rendered via Portal to body, isolated from parent styles */
+body > .powered-badge{position:fixed;bottom:16px;right:16px;display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(10,10,10,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:20px;text-decoration:none;font-size:11px;color:var(--text-subtle);transition:opacity .2s ease, transform .2s ease;z-index:99999;pointer-events:auto;margin:0}
 .powered-badge:hover{opacity:.9;transform:translateY(-1px)}
-.powered-badge img{width:14px;height:14px;object-fit:contain;opacity:.85;display:block}
-.powered-badge span{font-weight:400;letter-spacing:.02em;display:block}
+.powered-badge img{width:14px;height:14px;object-fit:contain;opacity:.85;display:block;flex-shrink:0}
+.powered-badge span{font-weight:400;letter-spacing:.02em;white-space:nowrap}
 @media (max-width: 600px){
-	.powered-badge{bottom:12px !important;right:12px !important;top:auto !important;left:auto !important;padding:5px 8px;font-size:10px;z-index:99999 !important;position:fixed !important}
-	.powered-badge img{width:12px;height:12px}
+	body > .powered-badge{bottom:12px;right:12px;padding:5px 8px;font-size:10px}
+	body > .powered-badge img{width:12px;height:12px}
 }
-/* iPhone Safari specific fixes */
+/* iPhone Safari specific - ensure viewport positioning */
 @supports (-webkit-touch-callout: none){
-	.powered-badge{position:fixed !important;bottom:12px !important;right:12px !important;top:auto !important;left:auto !important;z-index:99999 !important}
+	body > .powered-badge{position:fixed;bottom:12px;right:12px;z-index:99999}
 }
-/* Ensure it's not affected by any parent transforms */
-.powered-badge{transform:none !important}
-.powered-badge:hover{transform:translateY(-1px) !important}
 
 @media (max-width: 900px){
 	.hero-inner{grid-template-columns:1fr}
@@ -268,16 +235,17 @@ a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:
 	.hero p{font-size:16px}
 	.hero-cta{flex-direction:column}
 	.hero-cta .btn{width:100%}
-	.hero-art{height:240px}
-	.section{padding:46px 0}
+	.hero-art{height:220px}
+	.section{padding:40px 0}
 	.features{grid-template-columns:1fr}
 	.card{padding:16px}
-	.contact-form{padding:16px}
+	.contact-form{padding:16px;width:100%}
 	.contact-grid{grid-template-columns:1fr;gap:16px}
 	.contact-card{padding:18px}
 	.footer-inner{flex-direction:column;gap:16px;align-items:flex-start}
 	.footer-contact{align-items:flex-start}
 	.footer-bottom{flex-direction:column;gap:10px;align-items:flex-start}
+	.video-section{display:none}
 }
 
 /* Small iPhones (Mini/SE/older) */
@@ -290,9 +258,11 @@ a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:
 	.hero{padding:46px 0}
 	.hero h1{font-size:26px}
 	.hero p{font-size:15px}
-	.hero-art{height:200px}
-	.section{padding:38px 0}
+	.hero-art{height:220px}
+	.section{padding:40px 0}
 	.card{padding:14px}
+	.contact-form-wrap{flex-direction:column;gap:16px}
+	.contact-form{padding:16px;width:100%}
 }
 
 
