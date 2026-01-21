@@ -223,13 +223,17 @@ a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:
 .logo{width:100%;height:100%;object-fit:contain;filter:brightness(.96) contrast(1.05) drop-shadow(0 4px 16px rgba(0,0,0,.6));background:transparent;border-radius:8px;padding:0;border:none}
 
 /* Powered by badge - clean and minimal */
-.powered-badge{position:fixed;bottom:16px;right:16px;display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(10,10,10,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:20px;text-decoration:none;font-size:11px;color:var(--text-subtle);transition:opacity .2s ease, transform .2s ease;z-index:100}
+.powered-badge{position:fixed !important;bottom:16px !important;right:16px !important;top:auto !important;left:auto !important;display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(10,10,10,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:20px;text-decoration:none;font-size:11px;color:var(--text-subtle);transition:opacity .2s ease, transform .2s ease;z-index:9999;pointer-events:auto}
 .powered-badge:hover{opacity:.9;transform:translateY(-1px)}
 .powered-badge img{width:14px;height:14px;object-fit:contain;opacity:.85}
 .powered-badge span{font-weight:400;letter-spacing:.02em}
 @media (max-width: 600px){
-	.powered-badge{bottom:12px;right:12px;padding:5px 8px;font-size:10px}
+	.powered-badge{bottom:12px !important;right:12px !important;top:auto !important;left:auto !important;padding:5px 8px;font-size:10px;z-index:9999}
 	.powered-badge img{width:12px;height:12px}
+}
+/* iPhone Safari specific fixes */
+@supports (-webkit-touch-callout: none){
+	.powered-badge{position:fixed !important;bottom:12px !important;right:12px !important}
 }
 
 @media (max-width: 900px){
