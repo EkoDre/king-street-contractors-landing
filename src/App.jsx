@@ -52,8 +52,9 @@ function App() {
 		window.scrollTo(0, 0)
 	}, [])
 	
-	// Badge positioning - most robust method using Portal + requestAnimationFrame
+	// Badge positioning - hide until properly positioned to prevent flash in wrong location
 	const [badgeMounted, setBadgeMounted] = React.useState(false)
+	const [badgePositioned, setBadgePositioned] = React.useState(false)
 	
 	React.useEffect(() => {
 		// Wait for next frame to ensure DOM is ready
@@ -66,29 +67,72 @@ function App() {
 	React.useEffect(() => {
 		if (!badgeMounted) return
 		
+		// Use double RAF to ensure DOM is fully ready
+		const rafId1 = requestAnimationFrame(() => {
+			const rafId2 = requestAnimationFrame(() => {
+				const badge = document.querySelector('.powered-badge')
+				if (!badge || badge.parentElement !== document.body) return
+				
+				// Force positioning immediately
+				const bottomValue = window.innerWidth <= 600 ? '12px' : '16px'
+				const rightValue = window.innerWidth <= 600 ? '12px' : '16px'
+				
+				badge.style.cssText = `
+					position: fixed !important;
+					bottom: ${bottomValue} !important;
+					right: ${rightValue} !important;
+					top: auto !important;
+					left: auto !important;
+					z-index: 999999 !important;
+					margin: 0 !important;
+					transform: none !important;
+					visibility: visible !important;
+					opacity: 1 !important;
+				`
+				
+				// Verify position is correct before showing
+				const rect = badge.getBoundingClientRect()
+				const viewportHeight = window.innerHeight
+				const viewportWidth = window.innerWidth
+				
+				// Check if badge is actually at bottom-right
+				if (rect.bottom <= viewportHeight && rect.right <= viewportWidth) {
+					setBadgePositioned(true)
+				} else {
+					// If not, force it again and show anyway after a short delay
+					setTimeout(() => setBadgePositioned(true), 100)
+				}
+			})
+			return () => cancelAnimationFrame(rafId2)
+		})
+		return () => cancelAnimationFrame(rafId1)
+	}, [badgeMounted])
+	
+	React.useEffect(() => {
+		if (!badgePositioned) return
+		
 		const badge = document.querySelector('.powered-badge')
 		if (!badge) return
 		
-		// Force positioning using requestAnimationFrame for maximum reliability
+		// Continuous positioning function
 		const positionBadge = () => {
-			requestAnimationFrame(() => {
-				if (badge && badge.parentElement === document.body) {
-					badge.style.cssText = `
-						position: fixed !important;
-						bottom: ${window.innerWidth <= 600 ? '12px' : '16px'} !important;
-						right: ${window.innerWidth <= 600 ? '12px' : '16px'} !important;
-						top: auto !important;
-						left: auto !important;
-						z-index: 999999 !important;
-						margin: 0 !important;
-						transform: none !important;
-					`
-				}
-			})
+			if (badge && badge.parentElement === document.body) {
+				const bottomValue = window.innerWidth <= 600 ? '12px' : '16px'
+				const rightValue = window.innerWidth <= 600 ? '12px' : '16px'
+				badge.style.cssText = `
+					position: fixed !important;
+					bottom: ${bottomValue} !important;
+					right: ${rightValue} !important;
+					top: auto !important;
+					left: auto !important;
+					z-index: 999999 !important;
+					margin: 0 !important;
+					transform: none !important;
+					visibility: visible !important;
+					opacity: 1 !important;
+				`
+			}
 		}
-		
-		// Position immediately
-		positionBadge()
 		
 		// Watch for any style changes (MutationObserver)
 		const observer = new MutationObserver(() => {
@@ -111,7 +155,7 @@ function App() {
 			window.removeEventListener('scroll', positionBadge)
 			window.removeEventListener('orientationchange', positionBadge)
 		}
-	}, [badgeMounted])
+	}, [badgePositioned])
 
 	return (
 		<>
@@ -344,7 +388,7 @@ function App() {
 				href="https://ekomadevpn.com"
 				target="_blank"
 				rel="noopener noreferrer"
-				className="powered-badge"
+				className={`powered-badge ${badgePositioned ? 'positioned' : ''}`}
 			>
 				<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
 				<span>Powered by EkoMade Labs</span>

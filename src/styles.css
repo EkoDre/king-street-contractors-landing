@@ -231,6 +231,7 @@ a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:
 
 /* Powered by badge - rendered via Portal to body, isolated from .page container */
 /* The .page div has position:relative which breaks fixed positioning, so Portal is essential */
+/* Hide badge until properly positioned to prevent flash in wrong location */
 body > .powered-badge{
 	position:fixed !important;
 	bottom:16px !important;
@@ -255,6 +256,13 @@ body > .powered-badge{
 	transform:none !important;
 	width:auto !important;
 	height:auto !important;
+	visibility:hidden !important;
+	opacity:0 !important;
+}
+/* Only show badge when positioned class is added */
+body > .powered-badge.positioned{
+	visibility:visible !important;
+	opacity:1 !important;
 }
 body > .powered-badge:hover{opacity:.9 !important}
 body > .powered-badge img{width:14px !important;height:14px !important;object-fit:contain !important;opacity:.85 !important;display:block !important;flex-shrink:0 !important}
@@ -270,6 +278,12 @@ body > .powered-badge span{font-weight:400 !important;letter-spacing:.02em !impo
 		padding:5px 8px !important;
 		font-size:10px !important;
 		z-index:999999 !important;
+		visibility:hidden !important;
+		opacity:0 !important;
+	}
+	body > .powered-badge.positioned{
+		visibility:visible !important;
+		opacity:1 !important;
 	}
 	body > .powered-badge img{width:12px !important;height:12px !important}
 }
@@ -284,6 +298,12 @@ body > .powered-badge span{font-weight:400 !important;letter-spacing:.02em !impo
 		left:auto !important;
 		z-index:999999 !important;
 		transform:none !important;
+		visibility:hidden !important;
+		opacity:0 !important;
+	}
+	body > .powered-badge.positioned{
+		visibility:visible !important;
+		opacity:1 !important;
 	}
 }
 
