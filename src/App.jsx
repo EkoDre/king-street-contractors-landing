@@ -216,9 +216,48 @@ function App() {
 						</div>
 						<form
 							className="contact-form-new"
-							onSubmit={(e) => {
+							onSubmit={async (e) => {
 								e.preventDefault();
-								alert('Thank you — your request has been received.');
+								const form = e.target;
+								const formData = new FormData(form);
+								const data = {
+									name: formData.get('name'),
+									email: formData.get('email'),
+									phone: formData.get('phone'),
+									projectType: formData.get('projectType'),
+									message: formData.get('message'),
+								};
+
+								// Disable submit button
+								const submitBtn = form.querySelector('button[type="submit"]');
+								const originalText = submitBtn.textContent;
+								submitBtn.disabled = true;
+								submitBtn.textContent = 'Sending...';
+
+								try {
+									const response = await fetch('/api/send-email', {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json',
+										},
+										body: JSON.stringify(data),
+									});
+
+									const result = await response.json();
+
+									if (response.ok) {
+										alert('Thank you — your request has been received. We\'ll get back to you soon!');
+										form.reset();
+									} else {
+										alert('Sorry, there was an error sending your message. Please try again or call us directly.');
+									}
+								} catch (error) {
+									console.error('Error:', error);
+									alert('Sorry, there was an error sending your message. Please try again or call us directly.');
+								} finally {
+									submitBtn.disabled = false;
+									submitBtn.textContent = originalText;
+								}
 							}}
 						>
 							<div className="form-field-new">
