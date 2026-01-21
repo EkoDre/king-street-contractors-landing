@@ -223,18 +223,21 @@ a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:
 .logo{width:100%;height:100%;object-fit:contain;filter:brightness(.96) contrast(1.05) drop-shadow(0 4px 16px rgba(0,0,0,.6));background:transparent;border-radius:8px;padding:0;border:none}
 
 /* Powered by badge - clean and minimal */
-.powered-badge{position:fixed !important;bottom:16px !important;right:16px !important;top:auto !important;left:auto !important;display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(10,10,10,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:20px;text-decoration:none;font-size:11px;color:var(--text-subtle);transition:opacity .2s ease, transform .2s ease;z-index:9999;pointer-events:auto}
+.powered-badge{position:fixed !important;bottom:16px !important;right:16px !important;top:auto !important;left:auto !important;display:flex !important;align-items:center;gap:6px;padding:6px 10px;background:rgba(10,10,10,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:20px;text-decoration:none;font-size:11px;color:var(--text-subtle);transition:opacity .2s ease, transform .2s ease;z-index:99999 !important;pointer-events:auto;margin:0 !important}
 .powered-badge:hover{opacity:.9;transform:translateY(-1px)}
-.powered-badge img{width:14px;height:14px;object-fit:contain;opacity:.85}
-.powered-badge span{font-weight:400;letter-spacing:.02em}
+.powered-badge img{width:14px;height:14px;object-fit:contain;opacity:.85;display:block}
+.powered-badge span{font-weight:400;letter-spacing:.02em;display:block}
 @media (max-width: 600px){
-	.powered-badge{bottom:12px !important;right:12px !important;top:auto !important;left:auto !important;padding:5px 8px;font-size:10px;z-index:9999}
+	.powered-badge{bottom:12px !important;right:12px !important;top:auto !important;left:auto !important;padding:5px 8px;font-size:10px;z-index:99999 !important;position:fixed !important}
 	.powered-badge img{width:12px;height:12px}
 }
 /* iPhone Safari specific fixes */
 @supports (-webkit-touch-callout: none){
-	.powered-badge{position:fixed !important;bottom:12px !important;right:12px !important}
+	.powered-badge{position:fixed !important;bottom:12px !important;right:12px !important;top:auto !important;left:auto !important;z-index:99999 !important}
 }
+/* Ensure it's not affected by any parent transforms */
+.powered-badge{transform:none !important}
+.powered-badge:hover{transform:translateY(-1px) !important}
 
 @media (max-width: 900px){
 	.hero-inner{grid-template-columns:1fr}

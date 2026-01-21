@@ -282,16 +282,16 @@ function App() {
 					<a href="#" className="muted">Privacy Policy</a>
 				</div>
 			</footer>
-			<a
-				href="https://ekomadevpn.com"
-				target="_blank"
-				rel="noopener noreferrer"
-				className="powered-badge"
-			>
-				<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
-				<span>Powered by EkoMade Labs</span>
-			</a>
 		</div>
+		<a
+			href="https://ekomadevpn.com"
+			target="_blank"
+			rel="noopener noreferrer"
+			className="powered-badge"
+		>
+			<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
+			<span>Powered by EkoMade Labs</span>
+		</a>
 	)
 }
 
