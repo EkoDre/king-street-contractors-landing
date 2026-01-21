@@ -38,6 +38,7 @@ This email was sent from the contact form on kingstreetcontractors.com
     `.trim();
 
     // Send email using Resend API
+    // Use Resend's default domain for testing (change to your domain after verification)
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -45,7 +46,7 @@ This email was sent from the contact form on kingstreetcontractors.com
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'King Street Contractors <noreply@kingstreetcontractors.com>',
+        from: 'King Street Contractors <onboarding@resend.dev>', // Use Resend's default domain
         to: ['Mete@kingstreetcontractors.com'],
         subject: emailSubject,
         text: emailBody,
@@ -54,15 +55,21 @@ This email was sent from the contact form on kingstreetcontractors.com
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
       console.error('Resend API error:', errorData);
-      return res.status(500).json({ error: 'Failed to send email' });
+      return res.status(500).json({ 
+        error: 'Failed to send email', 
+        details: errorData.message || 'Check Vercel logs for details' 
+      });
     }
 
     const data = await response.json();
     return res.status(200).json({ success: true, messageId: data.id });
   } catch (error) {
     console.error('Error sending email:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message || 'Unknown error occurred'
+    });
   }
 }
