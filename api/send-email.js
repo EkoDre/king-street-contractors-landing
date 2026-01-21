@@ -46,7 +46,7 @@ This email was sent from the contact form on kingstreetcontractors.com
       },
       body: JSON.stringify({
         from: 'King Street Contractors <noreply@kingstreetcontractors.com>',
-        to: ['Info@kingstreetcontractors.com'],
+        to: ['Mete@kingstreetcontractors.com'],
         subject: emailSubject,
         text: emailBody,
         reply_to: email, // Allow replying directly to the customer

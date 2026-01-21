@@ -202,7 +202,7 @@ function App() {
 							</div>
 							<div className="contact-card">
 								<h3>Email</h3>
-								<p><a href="mailto:Info@kingstreetcontractors.com">Info@kingstreetcontractors.com</a></p>
+								<p><a href="mailto:Mete@kingstreetcontractors.com">Mete@kingstreetcontractors.com</a></p>
 							</div>
 						</div>
 					</div>
@@ -309,7 +309,7 @@ function App() {
 					</div>
 					<div className="footer-contact">
 						<a href="tel:914-215-1176" className="muted">(914) 215-1176</a>
-						<a href="mailto:Info@kingstreetcontractors.com" className="muted">Info@kingstreetcontractors.com</a>
+						<a href="mailto:Mete@kingstreetcontractors.com" className="muted">Mete@kingstreetcontractors.com</a>
 					</div>
 				</div>
 				<div className="container footer-bottom">
