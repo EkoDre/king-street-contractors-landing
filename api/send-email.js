@@ -1,4 +1,14 @@
 export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -16,8 +26,11 @@ export default async function handler(req, res) {
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
     if (!RESEND_API_KEY) {
-      console.error('RESEND_API_KEY is not set');
-      return res.status(500).json({ error: 'Email service not configured' });
+      console.error('RESEND_API_KEY is not set in environment variables');
+      return res.status(500).json({ 
+        error: 'Email service not configured',
+        message: 'RESEND_API_KEY environment variable is missing. Please add it in Vercel settings.'
+      });
     }
 
     // Format the email content
@@ -47,7 +60,7 @@ This email was sent from the contact form on kingstreetcontractors.com
       },
       body: JSON.stringify({
         from: 'King Street Contractors <onboarding@resend.dev>', // Use Resend's default domain
-        to: ['Mete@kingstreetcontractors.com'],
+        to: ['mete@kingstreetcontractors.com'], // Use lowercase - Resend verified email
         subject: emailSubject,
         text: emailBody,
         reply_to: email, // Allow replying directly to the customer
@@ -55,11 +68,21 @@ This email was sent from the contact form on kingstreetcontractors.com
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
-      console.error('Resend API error:', errorData);
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+      }
+      console.error('Resend API error:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData
+      });
       return res.status(500).json({ 
         error: 'Failed to send email', 
-        details: errorData.message || 'Check Vercel logs for details' 
+        details: errorData.message || errorData.error || `HTTP ${response.status}`,
+        status: response.status
       });
     }
 
