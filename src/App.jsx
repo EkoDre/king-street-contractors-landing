@@ -30,6 +30,8 @@ function ImageWithFallback({ className, alt, primary }){
 }
 
 function App() {
+	const [mounted, setMounted] = React.useState(false)
+	
 	React.useEffect(() => {
 		// Ensure page starts at top on initial load / hard refresh
 		window.scrollTo(0, 0)
@@ -37,6 +39,7 @@ function App() {
 		window.addEventListener('beforeunload', () => {
 			window.scrollTo(0, 0)
 		})
+		setMounted(true)
 		return () => {
 			window.removeEventListener('beforeunload', () => {
 				window.scrollTo(0, 0)
@@ -207,62 +210,55 @@ function App() {
 					</div>
 				</section>
 
-				<section id="contact" className="section cta">
-					<div className="container contact-form-wrap">
-						<div className="contact-form-copy">
+				<section id="contact" className="section contact-form-section">
+					<div className="container">
+						<div className="form-header">
 							<h2>Request a consultation</h2>
-							<p>Trusted local contractors ready to help with your next residential or commercial project.</p>
-							<p className="muted">Share a few project details and our team will follow up to schedule a call.</p>
+							<p>Get started on your project today. We'll respond within 24 hours.</p>
 						</div>
 						<form
-							className="contact-form"
+							className="contact-form-new"
 							onSubmit={(e) => {
 								e.preventDefault();
-								// later you can connect this to an API or email service
 								alert('Thank you — your request has been received.');
 							}}
 						>
-							<div className="form-row">
-								<div className="form-field">
-									<label htmlFor="name">Full name</label>
-									<input id="name" name="name" type="text" required placeholder="John Smith" />
-								</div>
-								<div className="form-field">
-									<label htmlFor="email">Email</label>
-									<input id="email" name="email" type="email" required placeholder="you@example.com" />
-								</div>
+							<div className="form-field-new">
+								<label htmlFor="name">Name</label>
+								<input id="name" name="name" type="text" required placeholder="Enter your name" />
 							</div>
-							<div className="form-row">
-								<div className="form-field">
-									<label htmlFor="phone">Phone</label>
-									<input id="phone" name="phone" type="tel" placeholder="(914) 215-1176" />
-								</div>
-								<div className="form-field">
-									<label htmlFor="projectType">Project type</label>
-									<select id="projectType" name="projectType" defaultValue="residential">
-										<option value="residential">Residential construction</option>
-										<option value="commercial">Commercial / industrial</option>
-										<option value="renovation">Renovation / remodeling</option>
-										<option value="site">Site development &amp; excavation</option>
-										<option value="other">Other</option>
-									</select>
-								</div>
+							<div className="form-field-new">
+								<label htmlFor="email">Email</label>
+								<input id="email" name="email" type="email" required placeholder="your.email@example.com" />
 							</div>
-							<div className="form-field">
+							<div className="form-field-new">
+								<label htmlFor="phone">Phone</label>
+								<input id="phone" name="phone" type="tel" placeholder="(914) 215-1176" />
+							</div>
+							<div className="form-field-new">
+								<label htmlFor="projectType">Project type</label>
+								<select id="projectType" name="projectType" defaultValue="">
+									<option value="">Select project type</option>
+									<option value="residential">Residential construction</option>
+									<option value="commercial">Commercial / industrial</option>
+									<option value="renovation">Renovation / remodeling</option>
+									<option value="site">Site development &amp; excavation</option>
+									<option value="other">Other</option>
+								</select>
+							</div>
+							<div className="form-field-new">
 								<label htmlFor="message">Project details</label>
 								<textarea
 									id="message"
 									name="message"
-									rows={4}
+									rows={5}
 									required
-									placeholder="Tell us about your timeline, property type, and what you’d like to build or renovate."
+									placeholder="Tell us about your project timeline, property type, and what you'd like to build or renovate..."
 								/>
 							</div>
-							<div className="form-footer">
-								<button type="submit" className="btn btn-lg btn-attention">
-									Submit
-								</button>
-							</div>
+							<button type="submit" className="form-submit-btn">
+								Submit
+							</button>
 						</form>
 					</div>
 				</section>
@@ -285,12 +281,20 @@ function App() {
 				</div>
 			</footer>
 		</div>
-		{typeof document !== 'undefined' && createPortal(
+		{mounted && typeof document !== 'undefined' && document.body && createPortal(
 			<a
 				href="https://ekomadevpn.com"
 				target="_blank"
 				rel="noopener noreferrer"
 				className="powered-badge"
+				style={{
+					position: 'fixed',
+					bottom: '16px',
+					right: '16px',
+					top: 'auto',
+					left: 'auto',
+					zIndex: 99999
+				}}
 			>
 				<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
 				<span>Powered by EkoMade Labs</span>
