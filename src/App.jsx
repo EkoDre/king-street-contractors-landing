@@ -1,5 +1,4 @@
 import React from 'react'
-import { createPortal } from 'react-dom'
 
 function ImageWithFallback({ className, alt, primary }){
 	// Build candidate list: public paths plus any src/ assets matching pattern
@@ -52,110 +51,7 @@ function App() {
 		window.scrollTo(0, 0)
 	}, [])
 	
-	// Badge positioning - hide until properly positioned to prevent flash in wrong location
-	const [badgeMounted, setBadgeMounted] = React.useState(false)
-	const [badgePositioned, setBadgePositioned] = React.useState(false)
 	
-	React.useEffect(() => {
-		// Wait for next frame to ensure DOM is ready
-		const rafId = requestAnimationFrame(() => {
-			setBadgeMounted(true)
-		})
-		return () => cancelAnimationFrame(rafId)
-	}, [])
-	
-	React.useEffect(() => {
-		if (!badgeMounted) return
-		
-		// Use double RAF to ensure DOM is fully ready
-		const rafId1 = requestAnimationFrame(() => {
-			const rafId2 = requestAnimationFrame(() => {
-				const badge = document.querySelector('.powered-badge')
-				if (!badge || badge.parentElement !== document.body) return
-				
-				// Force positioning immediately
-				const bottomValue = window.innerWidth <= 600 ? '12px' : '16px'
-				const rightValue = window.innerWidth <= 600 ? '12px' : '16px'
-				
-				badge.style.cssText = `
-					position: fixed !important;
-					bottom: ${bottomValue} !important;
-					right: ${rightValue} !important;
-					top: auto !important;
-					left: auto !important;
-					z-index: 999999 !important;
-					margin: 0 !important;
-					transform: none !important;
-					visibility: visible !important;
-					opacity: 1 !important;
-				`
-				
-				// Verify position is correct before showing
-				const rect = badge.getBoundingClientRect()
-				const viewportHeight = window.innerHeight
-				const viewportWidth = window.innerWidth
-				
-				// Check if badge is actually at bottom-right
-				if (rect.bottom <= viewportHeight && rect.right <= viewportWidth) {
-					setBadgePositioned(true)
-				} else {
-					// If not, force it again and show anyway after a short delay
-					setTimeout(() => setBadgePositioned(true), 100)
-				}
-			})
-			return () => cancelAnimationFrame(rafId2)
-		})
-		return () => cancelAnimationFrame(rafId1)
-	}, [badgeMounted])
-	
-	React.useEffect(() => {
-		if (!badgePositioned) return
-		
-		const badge = document.querySelector('.powered-badge')
-		if (!badge) return
-		
-		// Continuous positioning function
-		const positionBadge = () => {
-			if (badge && badge.parentElement === document.body) {
-				const bottomValue = window.innerWidth <= 600 ? '12px' : '16px'
-				const rightValue = window.innerWidth <= 600 ? '12px' : '16px'
-				badge.style.cssText = `
-					position: fixed !important;
-					bottom: ${bottomValue} !important;
-					right: ${rightValue} !important;
-					top: auto !important;
-					left: auto !important;
-					z-index: 999999 !important;
-					margin: 0 !important;
-					transform: none !important;
-					visibility: visible !important;
-					opacity: 1 !important;
-				`
-			}
-		}
-		
-		// Watch for any style changes (MutationObserver)
-		const observer = new MutationObserver(() => {
-			positionBadge()
-		})
-		observer.observe(badge, {
-			attributes: true,
-			attributeFilter: ['style', 'class'],
-			subtree: false
-		})
-		
-		// Reposition on resize/scroll/orientation change
-		window.addEventListener('resize', positionBadge, { passive: true })
-		window.addEventListener('scroll', positionBadge, { passive: true })
-		window.addEventListener('orientationchange', positionBadge)
-		
-		return () => {
-			observer.disconnect()
-			window.removeEventListener('resize', positionBadge)
-			window.removeEventListener('scroll', positionBadge)
-			window.removeEventListener('orientationchange', positionBadge)
-		}
-	}, [badgePositioned])
 
 	return (
 		<>
@@ -379,22 +275,13 @@ function App() {
 				</div>
 				<div className="container footer-bottom">
 					<span className="muted">© {new Date().getFullYear()} King Street Contractors. All rights reserved.</span>
-					<a href="#" className="muted">Privacy Policy</a>
+					<a href="https://ekomadevpn.com" target="_blank" rel="noopener noreferrer" className="muted" style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+						<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" style={{width: '42px', height: '42px', opacity: 0.85}} />
+						<span>Powered by EkoMade Labs</span>
+					</a>
 				</div>
 			</footer>
 		</div>
-		{badgeMounted && typeof document !== 'undefined' && document.body && createPortal(
-			<a
-				href="https://ekomadevpn.com"
-				target="_blank"
-				rel="noopener noreferrer"
-				className={`powered-badge ${badgePositioned ? 'positioned' : ''}`}
-			>
-				<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
-				<span>Powered by EkoMade Labs</span>
-			</a>,
-			document.body
-		)}
 		</>
 	)
 }

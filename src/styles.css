@@ -229,81 +229,35 @@ a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:
 .logo-wrap{display:flex;align-items:center;gap:14px;width:220px;height:52px}
 .logo{width:100%;height:100%;object-fit:contain;filter:brightness(.96) contrast(1.05) drop-shadow(0 4px 16px rgba(0,0,0,.6));background:transparent;border-radius:8px;padding:0;border:none}
 
-/* Powered by badge - rendered via Portal to body, isolated from .page container */
-/* The .page div has position:relative which breaks fixed positioning, so Portal is essential */
-/* Hide badge until properly positioned to prevent flash in wrong location */
-body > .powered-badge{
-	position:fixed !important;
-	bottom:16px !important;
-	right:16px !important;
-	top:auto !important;
-	left:auto !important;
-	display:flex !important;
-	align-items:center !important;
-	gap:6px !important;
-	padding:6px 10px !important;
-	background:rgba(10,10,10,.75) !important;
-	backdrop-filter:blur(8px) !important;
-	border:1px solid rgba(255,255,255,.08) !important;
-	border-radius:20px !important;
-	text-decoration:none !important;
-	font-size:11px !important;
-	color:var(--text-subtle) !important;
-	transition:opacity .2s ease !important;
-	z-index:999999 !important;
-	pointer-events:auto !important;
-	margin:0 !important;
-	transform:none !important;
-	width:auto !important;
-	height:auto !important;
-	visibility:hidden !important;
-	opacity:0 !important;
+/* Powered by badge - simple fixed positioning outside .page container */
+.powered-badge-simple{
+	position:fixed;
+	bottom:16px;
+	right:16px;
+	display:flex;
+	align-items:center;
+	gap:6px;
+	padding:6px 10px;
+	background:rgba(10,10,10,.75);
+	backdrop-filter:blur(8px);
+	border:1px solid rgba(255,255,255,.08);
+	border-radius:20px;
+	text-decoration:none;
+	font-size:11px;
+	color:var(--text-subtle);
+	transition:opacity .2s ease;
+	z-index:999999;
+	pointer-events:auto;
 }
-/* Only show badge when positioned class is added */
-body > .powered-badge.positioned{
-	visibility:visible !important;
-	opacity:1 !important;
-}
-body > .powered-badge:hover{opacity:.9 !important}
-body > .powered-badge img{width:14px !important;height:14px !important;object-fit:contain !important;opacity:.85 !important;display:block !important;flex-shrink:0 !important}
-body > .powered-badge span{font-weight:400 !important;letter-spacing:.02em !important;white-space:nowrap !important}
+.powered-badge-simple:hover{opacity:.9}
+.powered-badge-simple span{font-weight:400;letter-spacing:.02em;white-space:nowrap}
 
 @media (max-width: 600px){
-	body > .powered-badge{
-		position:fixed !important;
-		bottom:12px !important;
-		right:12px !important;
-		top:auto !important;
-		left:auto !important;
-		padding:5px 8px !important;
-		font-size:10px !important;
-		z-index:999999 !important;
-		visibility:hidden !important;
-		opacity:0 !important;
-	}
-	body > .powered-badge.positioned{
-		visibility:visible !important;
-		opacity:1 !important;
-	}
-	body > .powered-badge img{width:12px !important;height:12px !important}
-}
-
-/* iPhone Safari specific - ensure viewport positioning */
-@supports (-webkit-touch-callout: none){
-	body > .powered-badge{
-		position:fixed !important;
-		bottom:12px !important;
-		right:12px !important;
-		top:auto !important;
-		left:auto !important;
-		z-index:999999 !important;
-		transform:none !important;
-		visibility:hidden !important;
-		opacity:0 !important;
-	}
-	body > .powered-badge.positioned{
-		visibility:visible !important;
-		opacity:1 !important;
+	.powered-badge-simple{
+		bottom:12px;
+		right:12px;
+		padding:5px 8px;
+		font-size:10px;
 	}
 }
 
