@@ -1,5 +1,4 @@
 import React from 'react'
-import { createPortal } from 'react-dom'
 
 function ImageWithFallback({ className, alt, primary }){
 	// Build candidate list: public paths plus any src/ assets matching pattern
@@ -30,8 +29,6 @@ function ImageWithFallback({ className, alt, primary }){
 }
 
 function App() {
-	const [mounted, setMounted] = React.useState(false)
-	
 	React.useEffect(() => {
 		// Ensure page starts at top on initial load / hard refresh
 		window.scrollTo(0, 0)
@@ -39,7 +36,6 @@ function App() {
 		window.addEventListener('beforeunload', () => {
 			window.scrollTo(0, 0)
 		})
-		setMounted(true)
 		return () => {
 			window.removeEventListener('beforeunload', () => {
 				window.scrollTo(0, 0)
@@ -280,27 +276,16 @@ function App() {
 					<a href="#" className="muted">Privacy Policy</a>
 				</div>
 			</footer>
-		</div>
-		{mounted && typeof document !== 'undefined' && document.body && createPortal(
 			<a
 				href="https://ekomadevpn.com"
 				target="_blank"
 				rel="noopener noreferrer"
 				className="powered-badge"
-				style={{
-					position: 'fixed',
-					bottom: '16px',
-					right: '16px',
-					top: 'auto',
-					left: 'auto',
-					zIndex: 99999
-				}}
 			>
 				<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
 				<span>Powered by EkoMade Labs</span>
-			</a>,
-			document.body
-		)}
+			</a>
+		</div>
 		</>
 	)
 }
