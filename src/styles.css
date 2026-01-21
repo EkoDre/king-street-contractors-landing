@@ -229,20 +229,62 @@ a:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:
 .logo-wrap{display:flex;align-items:center;gap:14px;width:220px;height:52px}
 .logo{width:100%;height:100%;object-fit:contain;filter:brightness(.96) contrast(1.05) drop-shadow(0 4px 16px rgba(0,0,0,.6));background:transparent;border-radius:8px;padding:0;border:none}
 
-/* Powered by badge - fixed bottom right */
-.powered-badge{position:fixed !important;bottom:16px !important;right:16px !important;top:auto !important;left:auto !important;display:flex !important;align-items:center !important;gap:6px !important;padding:6px 10px !important;background:rgba(10,10,10,.75) !important;backdrop-filter:blur(8px) !important;border:1px solid rgba(255,255,255,.08) !important;border-radius:20px !important;text-decoration:none !important;font-size:11px !important;color:var(--text-subtle) !important;transition:opacity .2s ease !important;z-index:99999 !important;pointer-events:auto !important;margin:0 !important;transform:none !important;width:auto !important;height:auto !important}
-.powered-badge:hover{opacity:.9 !important}
-.powered-badge img{width:14px !important;height:14px !important;object-fit:contain !important;opacity:.85 !important;display:block !important;flex-shrink:0 !important}
-.powered-badge span{font-weight:400 !important;letter-spacing:.02em !important;white-space:nowrap !important}
+/* Powered by badge - rendered via Portal to body, isolated from .page container */
+/* The .page div has position:relative which breaks fixed positioning, so Portal is essential */
+body > .powered-badge{
+	position:fixed !important;
+	bottom:16px !important;
+	right:16px !important;
+	top:auto !important;
+	left:auto !important;
+	display:flex !important;
+	align-items:center !important;
+	gap:6px !important;
+	padding:6px 10px !important;
+	background:rgba(10,10,10,.75) !important;
+	backdrop-filter:blur(8px) !important;
+	border:1px solid rgba(255,255,255,.08) !important;
+	border-radius:20px !important;
+	text-decoration:none !important;
+	font-size:11px !important;
+	color:var(--text-subtle) !important;
+	transition:opacity .2s ease !important;
+	z-index:999999 !important;
+	pointer-events:auto !important;
+	margin:0 !important;
+	transform:none !important;
+	width:auto !important;
+	height:auto !important;
+}
+body > .powered-badge:hover{opacity:.9 !important}
+body > .powered-badge img{width:14px !important;height:14px !important;object-fit:contain !important;opacity:.85 !important;display:block !important;flex-shrink:0 !important}
+body > .powered-badge span{font-weight:400 !important;letter-spacing:.02em !important;white-space:nowrap !important}
 
 @media (max-width: 600px){
-	.powered-badge{position:fixed !important;bottom:12px !important;right:12px !important;top:auto !important;left:auto !important;padding:5px 8px !important;font-size:10px !important;z-index:99999 !important}
-	.powered-badge img{width:12px !important;height:12px !important}
+	body > .powered-badge{
+		position:fixed !important;
+		bottom:12px !important;
+		right:12px !important;
+		top:auto !important;
+		left:auto !important;
+		padding:5px 8px !important;
+		font-size:10px !important;
+		z-index:999999 !important;
+	}
+	body > .powered-badge img{width:12px !important;height:12px !important}
 }
 
 /* iPhone Safari specific - ensure viewport positioning */
 @supports (-webkit-touch-callout: none){
-	.powered-badge{position:fixed !important;bottom:12px !important;right:12px !important;top:auto !important;left:auto !important;z-index:99999 !important;transform:none !important}
+	body > .powered-badge{
+		position:fixed !important;
+		bottom:12px !important;
+		right:12px !important;
+		top:auto !important;
+		left:auto !important;
+		z-index:999999 !important;
+		transform:none !important;
+	}
 }
 
 @media (max-width: 900px){

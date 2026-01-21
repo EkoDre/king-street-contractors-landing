@@ -1,4 +1,5 @@
 import React from 'react'
+import { createPortal } from 'react-dom'
 
 function ImageWithFallback({ className, alt, primary }){
 	// Build candidate list: public paths plus any src/ assets matching pattern
@@ -50,6 +51,67 @@ function App() {
 		}
 		window.scrollTo(0, 0)
 	}, [])
+	
+	// Badge positioning - most robust method using Portal + requestAnimationFrame
+	const [badgeMounted, setBadgeMounted] = React.useState(false)
+	
+	React.useEffect(() => {
+		// Wait for next frame to ensure DOM is ready
+		const rafId = requestAnimationFrame(() => {
+			setBadgeMounted(true)
+		})
+		return () => cancelAnimationFrame(rafId)
+	}, [])
+	
+	React.useEffect(() => {
+		if (!badgeMounted) return
+		
+		const badge = document.querySelector('.powered-badge')
+		if (!badge) return
+		
+		// Force positioning using requestAnimationFrame for maximum reliability
+		const positionBadge = () => {
+			requestAnimationFrame(() => {
+				if (badge && badge.parentElement === document.body) {
+					badge.style.cssText = `
+						position: fixed !important;
+						bottom: ${window.innerWidth <= 600 ? '12px' : '16px'} !important;
+						right: ${window.innerWidth <= 600 ? '12px' : '16px'} !important;
+						top: auto !important;
+						left: auto !important;
+						z-index: 999999 !important;
+						margin: 0 !important;
+						transform: none !important;
+					`
+				}
+			})
+		}
+		
+		// Position immediately
+		positionBadge()
+		
+		// Watch for any style changes (MutationObserver)
+		const observer = new MutationObserver(() => {
+			positionBadge()
+		})
+		observer.observe(badge, {
+			attributes: true,
+			attributeFilter: ['style', 'class'],
+			subtree: false
+		})
+		
+		// Reposition on resize/scroll/orientation change
+		window.addEventListener('resize', positionBadge, { passive: true })
+		window.addEventListener('scroll', positionBadge, { passive: true })
+		window.addEventListener('orientationchange', positionBadge)
+		
+		return () => {
+			observer.disconnect()
+			window.removeEventListener('resize', positionBadge)
+			window.removeEventListener('scroll', positionBadge)
+			window.removeEventListener('orientationchange', positionBadge)
+		}
+	}, [badgeMounted])
 
 	return (
 		<>
@@ -276,6 +338,8 @@ function App() {
 					<a href="#" className="muted">Privacy Policy</a>
 				</div>
 			</footer>
+		</div>
+		{badgeMounted && typeof document !== 'undefined' && document.body && createPortal(
 			<a
 				href="https://ekomadevpn.com"
 				target="_blank"
@@ -284,8 +348,9 @@ function App() {
 			>
 				<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
 				<span>Powered by EkoMade Labs</span>
-			</a>
-		</div>
+			</a>,
+			document.body
+		)}
 		</>
 	)
 }
