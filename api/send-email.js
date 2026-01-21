@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Format the email content
+    // Format the notification email to business
     const emailSubject = `New Contact Form Submission - ${projectType || 'General Inquiry'}`;
     const emailBody = `
 New contact form submission from King Street Contractors website:
@@ -50,44 +50,88 @@ ${message}
 This email was sent from the contact form on kingstreetcontractors.com
     `.trim();
 
-    // Send email using Resend API
-    // Use Resend's default domain for testing (change to your domain after verification)
-    const response = await fetch('https://api.resend.com/emails', {
+    // Format the confirmation email to customer
+    const confirmationSubject = "We've Got Your Inquiry";
+    const confirmationBody = `Hi ${name},
+
+Thanks for reaching out to King Street Contractors. We've received your message and will get back to you shortly to discuss your project.
+
+Best,
+
+The King Street Contractors Team`;
+
+    // Send notification email to business
+    const businessEmailResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'King Street Contractors <onboarding@resend.dev>', // Use Resend's default domain
-        to: ['mete@kingstreetcontractors.com'], // Use lowercase - Resend verified email
+        from: 'King Street Contractors <onboarding@resend.dev>',
+        to: ['mete@kingstreetcontractors.com'],
         subject: emailSubject,
         text: emailBody,
-        reply_to: email, // Allow replying directly to the customer
+        reply_to: email,
       }),
     });
 
-    if (!response.ok) {
+    if (!businessEmailResponse.ok) {
       let errorData;
       try {
-        errorData = await response.json();
+        errorData = await businessEmailResponse.json();
       } catch (e) {
-        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+        errorData = { message: `HTTP ${businessEmailResponse.status}: ${businessEmailResponse.statusText}` };
       }
-      console.error('Resend API error:', {
-        status: response.status,
-        statusText: response.statusText,
+      console.error('Resend API error (business email):', {
+        status: businessEmailResponse.status,
+        statusText: businessEmailResponse.statusText,
         error: errorData
       });
       return res.status(500).json({ 
         error: 'Failed to send email', 
-        details: errorData.message || errorData.error || `HTTP ${response.status}`,
-        status: response.status
+        details: errorData.message || errorData.error || `HTTP ${businessEmailResponse.status}`,
+        status: businessEmailResponse.status
       });
     }
 
-    const data = await response.json();
-    return res.status(200).json({ success: true, messageId: data.id });
+    // Send confirmation email to customer
+    const confirmationEmailResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: 'King Street Contractors <onboarding@resend.dev>',
+        to: [email], // Customer's email
+        subject: confirmationSubject,
+        text: confirmationBody,
+      }),
+    });
+
+    if (!confirmationEmailResponse.ok) {
+      // Log error but don't fail the request if confirmation fails
+      let errorData;
+      try {
+        errorData = await confirmationEmailResponse.json();
+      } catch (e) {
+        errorData = { message: `HTTP ${confirmationEmailResponse.status}: ${confirmationEmailResponse.statusText}` };
+      }
+      console.error('Resend API error (confirmation email):', {
+        status: confirmationEmailResponse.status,
+        statusText: confirmationEmailResponse.statusText,
+        error: errorData
+      });
+      // Still return success since business email was sent
+    }
+
+    const businessData = await businessEmailResponse.json();
+    return res.status(200).json({ 
+      success: true, 
+      messageId: businessData.id,
+      confirmationSent: confirmationEmailResponse.ok
+    });
   } catch (error) {
     console.error('Error sending email:', error);
     return res.status(500).json({ 
