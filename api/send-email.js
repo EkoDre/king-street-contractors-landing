@@ -68,7 +68,7 @@ The King Street Contractors Team`;
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'King Street Contractors <onboarding@resend.dev>',
+        from: 'King Street Contractors <noreply@kingstreetcontractors.com>', // Using verified domain
         to: ['mete@kingstreetcontractors.com'],
         subject: emailSubject,
         text: emailBody,
@@ -96,34 +96,45 @@ The King Street Contractors Team`;
     }
 
     // Send confirmation email to customer
-    const confirmationEmailResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: 'King Street Contractors <onboarding@resend.dev>',
-        to: [email], // Customer's email
-        subject: confirmationSubject,
-        text: confirmationBody,
-      }),
-    });
-
-    if (!confirmationEmailResponse.ok) {
-      // Log error but don't fail the request if confirmation fails
-      let errorData;
-      try {
-        errorData = await confirmationEmailResponse.json();
-      } catch (e) {
-        errorData = { message: `HTTP ${confirmationEmailResponse.status}: ${confirmationEmailResponse.statusText}` };
-      }
-      console.error('Resend API error (confirmation email):', {
-        status: confirmationEmailResponse.status,
-        statusText: confirmationEmailResponse.statusText,
-        error: errorData
+    // Domain is verified - can now send to any email address
+    let confirmationSent = false;
+    try {
+      const confirmationEmailResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${RESEND_API_KEY}`,
+        },
+        body: JSON.stringify({
+          from: 'King Street Contractors <noreply@kingstreetcontractors.com>', // Using verified domain
+          to: [email], // Customer's email
+          subject: confirmationSubject,
+          text: confirmationBody,
+        }),
       });
-      // Still return success since business email was sent
+
+      if (confirmationEmailResponse.ok) {
+        confirmationSent = true;
+        const confirmationData = await confirmationEmailResponse.json();
+        console.log('Confirmation email sent successfully:', confirmationData.id);
+      } else {
+        // Log error but don't fail the request if confirmation fails
+        let errorData;
+        try {
+          errorData = await confirmationEmailResponse.json();
+        } catch (e) {
+          errorData = { message: `HTTP ${confirmationEmailResponse.status}: ${confirmationEmailResponse.statusText}` };
+        }
+        console.error('Resend API error (confirmation email):', {
+          status: confirmationEmailResponse.status,
+          statusText: confirmationEmailResponse.statusText,
+          error: errorData,
+          customerEmail: email,
+          note: 'Confirmation email failed - likely because customer email is not verified. Domain verification required to send to all emails.'
+        });
+      }
+    } catch (confirmationError) {
+      console.error('Error sending confirmation email:', confirmationError);
     }
 
     const businessData = await businessEmailResponse.json();
