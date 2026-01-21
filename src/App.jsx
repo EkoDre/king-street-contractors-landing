@@ -29,6 +29,28 @@ function ImageWithFallback({ className, alt, primary }){
 }
 
 function App() {
+	React.useEffect(() => {
+		// Ensure page starts at top on initial load / hard refresh
+		window.scrollTo(0, 0)
+		// Also handle browser restore from cache
+		window.addEventListener('beforeunload', () => {
+			window.scrollTo(0, 0)
+		})
+		return () => {
+			window.removeEventListener('beforeunload', () => {
+				window.scrollTo(0, 0)
+			})
+		}
+	}, [])
+	
+	// Also scroll to top on page load/restore
+	React.useEffect(() => {
+		if (window.history.scrollRestoration) {
+			window.history.scrollRestoration = 'manual'
+		}
+		window.scrollTo(0, 0)
+	}, [])
+
 	return (
 		<div className="page">
 			<header className="nav">
@@ -36,7 +58,7 @@ function App() {
 					<nav className="menu">
 						<a href="#services">Services</a>
 						<a href="#sectors">Sectors</a>
-						<a href="#projects">Projects</a>
+						<a href="#faq">Projects</a>
 						<a href="#contact" className="btn btn-sm btn-attention">Get a Quote</a>
 					</nav>
 				</div>
@@ -235,11 +257,8 @@ function App() {
 								/>
 							</div>
 							<div className="form-footer">
-								<label className="checkbox">
-									<input type="checkbox" required /> <span>I agree to be contacted by King Street Contractors about this inquiry.</span>
-								</label>
 								<button type="submit" className="btn btn-lg btn-attention">
-									Request consultation
+									Submit
 								</button>
 							</div>
 						</form>
@@ -263,6 +282,15 @@ function App() {
 					<a href="#" className="muted">Privacy Policy</a>
 				</div>
 			</footer>
+			<a
+				href="https://ekomadevpn.com"
+				target="_blank"
+				rel="noopener noreferrer"
+				className="powered-badge"
+			>
+				<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" />
+				<span>Powered by EkoMade Labs</span>
+			</a>
 		</div>
 	)
 }
