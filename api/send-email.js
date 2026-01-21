@@ -141,7 +141,7 @@ The King Street Contractors Team`;
     return res.status(200).json({ 
       success: true, 
       messageId: businessData.id,
-      confirmationSent: confirmationEmailResponse.ok
+      confirmationSent: confirmationSent
     });
   } catch (error) {
     console.error('Error sending email:', error);
