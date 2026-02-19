@@ -132,10 +132,6 @@ function App() {
 								<p>Commercial construction company, office build-out, tenant improvement contractor, restaurant & retail construction, warehouse construction, industrial facility build, steel building contractor, commercial remodeling.</p>
 							</div>
 							<div className="card">
-								<h3>Management</h3>
-								<p>Construction management, project management construction, construction project management, design build firm, general contracting firm, construction engineering services.</p>
-							</div>
-							<div className="card">
 								<h3>Site Development & Excavation</h3>
 								<p>Professional site work including excavation, grading, drainage solutions, retaining walls, and blacktop paving. Complete land preparation and infrastructure services for residential and commercial properties.</p>
 							</div>
