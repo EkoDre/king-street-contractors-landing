@@ -7,6 +7,7 @@ function ImageWithFallback({ className, alt, primary }){
 	const assetUrls = Object.values(assetMatches)
 	const candidates = [
 		primary ? `${primary}${ts}` : null,
+		`/KingStreet_logo_transparent.png${ts}`,
 		`/king-street-contractors.JPG${ts}`,
 		`/king-street-contractors.jpeg${ts}`,
 		`/king-street-contractors.png${ts}`,
@@ -85,7 +86,7 @@ function App() {
 						</div>
 						<div className="hero-art" aria-hidden>
 							<div className="blob" />
-							<ImageWithFallback className="hero-crest" primary="/king-street-contractors.png" alt="King Street Contractors crest" />
+							<ImageWithFallback className="hero-crest" primary="/KingStreet_logo_transparent.png" alt="King Street Contractors crest" />
 						</div>
 					</div>
 				</section>
