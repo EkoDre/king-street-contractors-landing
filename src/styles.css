@@ -91,6 +91,11 @@ body{
 .features{grid-template-columns:repeat(2,1fr)}
 .pricing{grid-template-columns:repeat(3,1fr)}
 
+/* Desktop: 3 columns for features when we have 3 cards */
+@media (min-width: 901px){
+	.features{grid-template-columns:repeat(3,1fr)}
+}
+
 .card{background:var(--surface-2);border:1px solid var(--outline);border-radius:14px;padding:18px;box-shadow:var(--shadow);transition:transform .18s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease}
 .card.highlight{border-color:rgba(138,180,248,.45);box-shadow:0 12px 36px rgba(138,180,248,.18)}
 .card h3{margin:0 0 8px}
