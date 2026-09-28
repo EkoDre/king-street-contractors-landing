@@ -307,7 +307,7 @@ function App() {
 				</div>
 				<div className="container footer-bottom">
 					<span className="muted">© {new Date().getFullYear()} King Street Contractors. All rights reserved.</span>
-					<a href="https://ekomadevpn.com" target="_blank" rel="noopener noreferrer" className="muted" style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+					<a href="https://ekomadelabs.co" target="_blank" rel="noopener noreferrer" className="muted" style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
 						<img src="/ekomade-labs-logo.png" alt="EkoMade Labs logo" style={{width: '42px', height: '42px', opacity: 0.85}} />
 						<span>Powered by EkoMade Labs</span>
 					</a>
